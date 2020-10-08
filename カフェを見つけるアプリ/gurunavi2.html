@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>ぐるなびAPI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="container"> 
+    <h1>Wifiが使える周辺のカフェ</h1>
+    <!-- MAP[START] -->
+    <div id="myMap" style='width:100%;height:300px;'></div>
+    <!-- MAP[END] -->
+
+    <div>
+        アクセスキーを入力<input id="key" value="【ぐるなびkeyを入れてください】" type="text" size="45">
+        <input type="button" id="btn" value="送信"><br>
+        緯度lat: <input type="text" id="lat" value="">
+        <!-- 35.667215 -->
+        経度lon: <input type="text" id="lon" value="">
+        <!-- 139.713861 -->
+    </div>
+
+    <!-- <ul id="shop-list"> -->
+
+    <!-- </ul> -->
+
+    <table id="table">
+        <tr>
+            <!-- <th>店舗名</th>
+            <th>営業時間</th> -->
+        </tr>
+    </table>
+
+    </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=【bing keyを入れてください】' async defer></script>
+<script src="../js/BmapQuery.js"></script>
+<script>
+
+//****************************************************************************************
+// BingMaps&BmapQuery
+//****************************************************************************************
+//Init
+function GetMap(){
+    //------------------------------------------------------------------------
+    //1. Instance
+    //------------------------------------------------------------------------
+    const map = new Bmap("#myMap");
+    //------------------------------------------------------------------------
+    //2. geolocation: Display Map
+    //   map.geolocation(function(data:object){...});
+    //------------------------------------------------------------------------
+    map.geolocation(function(data) {
+        //location
+        const lat = data.coords.latitude;
+        const lon = data.coords.longitude;
+        //Map
+        map.startMap(lat, lon, "load", 15);
+
+    
+        //pin 現在地
+        map.pin(lat,lon,"#ff0000");
+        $("#lat").val(lat);
+        $("#lon").val(lon);
+
+// 本当は現在地から取得した位置情報でマップにお店のピンを
+        // map.pin2(lat,lon,"#ff00ff");
+        // ('data.rest[i].latitude').val(lat);
+        // ('data.rest[i].longitude').val(lon);
+        // let pin2 = map.pin('data.rest[i].latitude', 'data.rest[i].longitude', "#ff00ff");
+    });
+}
+
+
+//*****************************************************
+// Click Event
+// ぐるなびAPIへデータRequest → APIサーバーからresponseデータ取得 
+//*****************************************************
+$("#btn").on("click", function() {
+    //送信データをObject変数で用意
+    //参考URL:https://api.gnavi.co.jp/api/manual/restsearch/
+    const data = {
+        keyid:$("#key").val(),
+        latitude:$("#lat").val(),
+        longitude:$("#lon").val(),
+         range:5,
+        wifi:1,
+        freeword:"カフェ"
+    };
+    //Ajax（非同期通信）
+    axios.get('https://api.gnavi.co.jp/RestSearchAPI/v3/', {
+        params:data
+    })
+    .then(function (response) {
+        //データ受信成功！！showData関数にデータを渡す
+        showData(response.data);
+    }).catch(function (error) {
+        console.log(error);//通信Error
+    }).then(function () {
+        //console.log("Last");//通信OK/Error後に処理を必ずさせたい場合
+
+
+    });
+    
+});
+
+//*****************************************************
+//ぐるなびデータ表示処理
+//*****************************************************
+function showData(data){
+    //データ確認用
+    console.log(data.rest);
+
+    //データを繰り返し処理で取得
+    const len  = data.rest.length; //データ数を取得
+    for( let i=0; i<len; i++){
+        // console.log(data.rest[i].url);
+        $("#table").append('<tr><td><a href="' + data.rest[i].url + '"><img class="shop-img" src=' + data.rest[i].image_url.shop_image1 + '></td><td class="shop-name">' + data.rest[i].name + '</td><td class="time">営業時間：' + data.rest[i].opentime +'</a></td></tr>');
+        // $("#table").append('<tr><td>' + data.rest[i].name + '</td><td>' + data.rest[i].opentime + '</td></tr>');
+        
+      };
+    }
+    
+
+</script>
+</body>
+</html>
