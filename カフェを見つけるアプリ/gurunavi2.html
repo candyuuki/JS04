@@ -13,7 +13,7 @@
     <!-- MAP[END] -->
 
     <div>
-        アクセスキーを入力<input id="key" value="【ぐるなびkeyを入れてください】" type="text" size="45">
+        アクセスキーを入力<input id="key" value="4e64eb4a513082261b30fc4e8bf11c77" type="text" size="45">
         <input type="button" id="btn" value="送信"><br>
         緯度lat: <input type="text" id="lat" value="">
         <!-- 35.667215 -->
@@ -36,8 +36,8 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=【bing keyを入れてください】' async defer></script>
-<script src="../js/BmapQuery.js"></script>
+<script src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AmEqg3O6GRR60qZ1Ris0zEQ5Uaf7ndvzc7dXaALd0bdvXud-Bc-somk38o896faV' async defer></script>
+<script src="/js/BmapQuery.js"></script>
 <script>
 
 //****************************************************************************************
@@ -66,7 +66,7 @@ function GetMap(){
         $("#lat").val(lat);
         $("#lon").val(lon);
 
-// 本当は現在地から取得した位置情報でマップにお店のピンを
+// 現在地から取得した位置情報でマップにお店のピンを表示したかった
         // map.pin2(lat,lon,"#ff00ff");
         // ('data.rest[i].latitude').val(lat);
         // ('data.rest[i].longitude').val(lon);
